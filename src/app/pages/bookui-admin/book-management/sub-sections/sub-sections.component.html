@@ -1,4 +1,3 @@
-<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
 <nb-card class="inline-form-card">
   <nb-card-header>Book Management - Sub-Sections</nb-card-header>
   <nb-card-body>
@@ -38,7 +37,7 @@
   </nb-card-body>
 </nb-card>
 
-<nb-card>
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
   <nb-card-header>
     Subsections for {{ section }} in {{ chapter }} in {{ book }}
   </nb-card-header>
