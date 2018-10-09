@@ -12,18 +12,20 @@ import {AddEditSubsectionComponent} from '../modals/add-edit-subsection/add-edit
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {BodyOutputType, Toast, ToasterConfig, ToasterService} from 'angular2-toaster';
 import {ToasterUtils} from '../../../../conf/util';
+import {SubsectionService} from '../service/subsection.service';
 
 @Component({
   selector: 'ngx-sub-sections',
   templateUrl: './sub-sections.component.html',
   styleUrls: ['./sub-sections.component.scss'],
-  providers: [NgbModal],
+  providers: [NgbModal, SubsectionService],
 })
 export class SubSectionsComponent implements OnInit {
 loading: boolean;
 subsections: Array<SubSection>;
 source: LocalDataSource;
 private toasterService: ToasterService;
+
 // toaster configuration
   public toasterConfig: ToasterConfig = new ToasterConfig({
     positionClass: ToasterUtils.POSITION_CLASS,
@@ -71,26 +73,54 @@ private toasterService: ToasterService;
     },
   };
 
-  constructor(private modalService: NgbModal, toasterService: ToasterService) {
+  constructor(private modalService: NgbModal, toasterService: ToasterService,
+              private subsectionService: SubsectionService) {
     this.toasterService = toasterService;
   }
 
   ngOnInit() {
     this.subsections = [];
+    this.getSubsections();
     this.source = new LocalDataSource(this.subsections);
   }
+  private getSubsections(): void {
+    this.loading = true;
+    this.subsectionService.getSubsections().subscribe((subsections: SubSection[]) => {
+      if (subsections) {
+        this.subsections = subsections;
+        this.source = new LocalDataSource(this.subsections);
+      } else {
+        this.showInformation(ToasterUtils.TOAST_TYPE.warning, 'Subsection', 'No Subsections retrieved.');
+      }
+    }, error =>  {
+      this.loading = false;
+        this.showInformation(ToasterUtils.TOAST_TYPE.warning,
+          'Subsection', 'Error fetching subsections.' + error.message);
+        console.error('Error fetching subsections:' + error.message);
+      },
+      () => {
+      this.loading = false;
+      });
+  }
   onDelete(event): void {
-    const subsection = event.data;
     if (window.confirm('Are you sure you want to delete?')) {
       this.loading = true;
-      setTimeout(() => {
-      const subsectionId = subsection.id;
-      const filteredSubSections = this.subsections.filter( b => b.id !== subsectionId);
-      this.subsections = filteredSubSections;
-      this.source.load(this.subsections);
+      this.subsectionService.deleteSubsection(event.data).subscribe(subsection => {
+        if (subsection) {
+          event.confirm.resolve();
+          this.showInformation(ToasterUtils.TOAST_TYPE.success, 'Subsection', 'Subsection deleted!');
+        } else {
+          event.confirm.reject();
+          this.showInformation(ToasterUtils.TOAST_TYPE.warning, 'Subsection', 'Subsection Not deleted!');
+        }
+      }, error => {
         this.loading = false;
-        this.showInformation(ToasterUtils.TOAST_TYPE.success, 'Subsection', 'subsection deleted!');
-      }, 2000);
+        this.showInformation(ToasterUtils.TOAST_TYPE.error, 'Subsection', 'An error occurred: ' + error.message);
+      }, () => {
+        this.loading = false;
+      });
+    } else {
+      event.confirm.reject();
     }
   }
 
@@ -119,18 +149,6 @@ private toasterService: ToasterService;
     activeModal.result.then(result => {
       if (result) {
         this.loading = true;
-        setTimeout(() => {
-        console.log(result);
-        if (subsection) {
-          const subsectionId = subsection.id;
-          const filteredSubSections = this.subsections.filter( b => b.id !== subsectionId);
-          this.subsections = filteredSubSections;
-        }
-        this.subsections.push(result);
-        this.source.load(this.subsections);
-          this.loading = false;
-          this.showInformation(ToasterUtils.TOAST_TYPE.success, 'Subsection', message);
-        }, 2000);
       }
     }).catch(error => {
       console.error(error);
