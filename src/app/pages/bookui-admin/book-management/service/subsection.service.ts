@@ -1,56 +1,44 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ErrorHandlerService, HandleError} from '../../../../shared/service/error-handler.service';
 import {SERVICE_BASE_URL} from '../../../../conf/util';
-import {SubSection} from '../domain/sub-section';
 import {Observable} from 'rxjs';
+import {SubSection} from '../domain/sub-section';
+import {timeout} from 'rxjs/operators';
 import {AppUtil} from '../../../../conf/app-util';
-import {catchError, timeout} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SubsectionService {
-  subsectionUrl = SERVICE_BASE_URL + 'subsections/';
-  private handleError: HandleError;
 
-  constructor(private http: HttpClient, httpErrorHandler: ErrorHandlerService) {
-    this.handleError = httpErrorHandler.createHandleError('SubsectionService');
-  }
+  private subsectionURL = SERVICE_BASE_URL + 'books/site/';
 
-  /**
-   * add subsection
-   */
-  addSubsection(subsection: SubSection): Observable<SubSection> {
-    const url = this.subsectionUrl + 'create';
-    return this.http.post<SubSection>(url, subsection, AppUtil.getHttpHeaders())
-      .pipe();
-  }
+  constructor(private http: HttpClient) { }
 
-  /**
-   * get subsection
-   */
-  getSubsections(): Observable<SubSection[]> {
-    const url = this.subsectionUrl + 'getall';
+  getSubsectionsInSection(sectionId: string): Observable<SubSection[]> {
+    const url = this.subsectionURL + 'subsections/getall/' + sectionId;
     return this.http.get<SubSection[]>(url).pipe(
       timeout(10000),
     );
   }
 
-  /**
-   * delete subsection
-   */
-  deleteSubsection(subsection: SubSection): Observable<SubSection> {
-    const url = this.subsectionUrl + 'delete';
-    return this.http.post<SubSection>(url, subsection, AppUtil.getHttpHeaders()).pipe();
+  addSubsection(subsection: SubSection): Observable<SubSection> {
+    const url = this.subsectionURL + 'subsection/create';
+    return this.http.post<SubSection>(url, subsection, AppUtil.getHttpHeaders()).pipe(
+      timeout(10000),
+    );
   }
 
-  /**
-   * update subsection
-   */
   updateSubsection(subsection: SubSection): Observable<SubSection> {
-    const url = this.subsectionUrl + 'update';
+    const url = this.subsectionURL + 'subsection/update';
     return this.http.post<SubSection>(url, subsection, AppUtil.getHttpHeaders()).pipe(
+      timeout(10000),
+    );
+  }
+
+  deleteSubsection(subsection: SubSection): Observable<boolean> {
+    const url = this.subsectionURL + 'subsection/delete';
+    return this.http.post<boolean>(url, subsection, AppUtil.getHttpHeaders()).pipe(
       timeout(10000),
     );
   }
