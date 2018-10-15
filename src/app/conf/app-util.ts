@@ -1,6 +1,8 @@
 import {UUID} from 'angular2-uuid';
 import {Md5} from 'ts-md5/dist/md5';
 import {HttpHeaders} from '@angular/common/http';
+import {ToasterUtils} from './util';
+import {BodyOutputType, Toast} from 'angular2-toaster';
 
 /**
  * @author caniksea
@@ -22,8 +24,21 @@ export class AppUtil {
     const httpOptions = {
       headers : new HttpHeaders({
         'Content-Type': 'application/json',
-      })
+      }),
     };
     return httpOptions;
+  }
+
+  static makeToast(type: string, title: string, info: string): Toast {
+    type = (type === null || type === '') ? ToasterUtils.TOAST_TYPE.default : type;
+    const toast: Toast = {
+      type: type,
+      title: title,
+      body: info,
+      timeout: ToasterUtils.TIMEOUT,
+      showCloseButton: ToasterUtils.SHOW_CLOSE_BUTTON,
+      bodyOutputType: BodyOutputType.TrustedHtml,
+    };
+    return toast;
   }
 }
