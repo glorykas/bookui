@@ -1,5 +1,36 @@
-<p>
-  book works!
-</p>
+<div class="row" [nbSpinner]="loading" nbSpinnerStatus="info">
+  <div class="col-8" *ngIf="story">
+    <nb-card size="medium">
+      <nb-card-header>
+        <span>Story</span>
+      </nb-card-header>
+      <nb-card-body>
+        {{ story }}
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div class="col-4" *ngIf="sections">
+    <nb-card size="medium">
+      <nb-card-header>
+        <span>Sections</span>
+      </nb-card-header>
+      <nb-card-body>
+        <ul class="books-per-site-list">
+          <li *ngFor="let item of sections">
+            <div class="visited-date">
+              <!--<div class="title">Site</div>-->
+              <div class="value">{{ item.sectionTitle }}</div>
+            </div>
+            <!--<div class="visited-pages-count">-->
+              <!--<div class="title">Number of Books</div>-->
+              <!--<div class="value">{{ item.bookCount }}</div>-->
+            <!--</div>-->
+          </li>
+        </ul>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
 
 <toaster-container [toasterconfig]="toasterConfig"></toaster-container>
