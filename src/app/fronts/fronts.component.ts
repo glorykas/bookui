@@ -24,11 +24,11 @@ export class FrontsComponent implements OnInit {
 
   constructor(private dataTransferService: DataTransferService,
               private chapterService: ChapterService,
-              private sectionService: SectionService,
   ) {
   }
 
   ngOnInit() {
+    this.sectionMap = new Map<string, Section[]>();
     this.chapters = [];
     this.menus = MENU_ITEMS;
     this.dataTransferService.currentBook.subscribe(book => this.book = book);
@@ -52,6 +52,9 @@ export class FrontsComponent implements OnInit {
     this.chapterService.getChapters(bookId).subscribe(chapters => {
         if (chapters) {
           this.chapters = chapters;
+        } else {
+          BookComponent.showInformation(ToasterUtils.TOAST_TYPE.warning, 'Book Read - Menus',
+            'Could not get chapters in ' + this.book.bookTitle);
         }
       },
       error => {
@@ -68,14 +71,14 @@ export class FrontsComponent implements OnInit {
     chapters.forEach(chapter => {
       const title = chapter.chapterTitle;
       const link = '/bookui-read/book/chapter/' + chapter.chapterId;
-      this.getSectionsInChapter(chapter);
-      // const menu: NbMenuItem = {
-      //   title: title,
-      //   link: link,
-      //   icon: 'nb-play-outline',
-      // };
-      //
-      // this.menus.push(menu);
+      // this.getSectionsInChapter(chapter);
+      const menu: NbMenuItem = {
+        title: title,
+        link: link,
+        icon: 'nb-play-outline',
+      };
+
+      this.menus.push(menu);
     });
   }
 
@@ -91,23 +94,5 @@ export class FrontsComponent implements OnInit {
         },
       ],
     };
-  }
-
-  private getSectionsInChapter(chapter: Chapter) {
-    this.loading = true;
-    this.sectionService.getSectionsInChapter(chapter.chapterId).subscribe(sections => {
-        if (sections) {
-          this.sectionMap.set(chapter.chapterId, sections);
-        } else {
-          BookComponent.showInformation(ToasterUtils.TOAST_TYPE.warning, 'Book Read - Menu', 'Could not get sections for ' + chapter.chapterTitle);
-        }
-      },
-      error => {
-        this.loading = false;
-        BookComponent.showInformation(ToasterUtils.TOAST_TYPE.error, 'Book Read - Menu', 'An error occurred: ' + error.message);
-      },
-      () => {
-        this.loading = false;
-      });
   }
 }
