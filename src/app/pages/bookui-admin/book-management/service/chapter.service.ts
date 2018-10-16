@@ -63,5 +63,16 @@ export class ChapterService {
       // catchError(this.handleError('updateChapter', chapter)),
     );
   }
+
+  /**
+   * Get a chapter
+   * @param chapterId
+   */
+  getChapter(chapterId: string): Observable<Chapter> {
+    const url = this.chapterUrl + 'chapter/get/' + chapterId;
+    return this.http.get<Chapter>(url).pipe(
+      timeout(10000),
+    );
+  }
 }
 
