@@ -18,6 +18,10 @@
       padding-left: 1rem;
     }
   }
+  
+  /deep/ ng2-smart-table tbody > tr {
+    cursor: pointer;
+  }
 
   ///deep/ nb-card-body {
   //  display: flex;
