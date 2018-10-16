@@ -6,7 +6,6 @@ import {DataTransferService} from '../shared/service/data-transfer.service';
 import {ChapterService} from '../pages/bookui-admin/book-management/service/chapter.service';
 import {Chapter} from '../pages/bookui-admin/book-management/domain/chapter';
 import {Section} from '../pages/bookui-admin/book-management/domain/section';
-import {SectionService} from '../pages/bookui-admin/book-management/service/section.service';
 import {BookComponent} from './book/book.component';
 import {ToasterUtils} from '../conf/util';
 
