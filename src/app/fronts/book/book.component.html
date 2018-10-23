@@ -1,16 +1,6 @@
 <div class="row" [nbSpinner]="loading" nbSpinnerStatus="info">
-  <div class="col-8" *ngIf="story">
-    <nb-card size="medium">
-      <nb-card-header>
-        <span>Story</span>
-      </nb-card-header>
-      <nb-card-body>
-        {{ story }}
-      </nb-card-body>
-    </nb-card>
-  </div>
 
-  <div class="col-4" *ngIf="sections">
+  <div class="col-3" *ngIf="sections">
     <nb-card size="medium">
       <nb-card-header>
         <span>Sections</span>
@@ -23,11 +13,21 @@
               <div class="value">{{ item.sectionTitle }}</div>
             </div>
             <!--<div class="visited-pages-count">-->
-              <!--<div class="title">Number of Books</div>-->
-              <!--<div class="value">{{ item.bookCount }}</div>-->
+            <!--<div class="title">Number of Books</div>-->
+            <!--<div class="value">{{ item.bookCount }}</div>-->
             <!--</div>-->
           </li>
         </ul>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div [ngClass]="sections ? 'col-9' : 'col-12'" *ngIf="story">
+    <nb-card size="medium">
+      <nb-card-header>
+        <span>{{book.bookTitle}}</span>
+      </nb-card-header>
+      <nb-card-body class="padding-left-right-15" [innerHtml]="story">
       </nb-card-body>
     </nb-card>
   </div>

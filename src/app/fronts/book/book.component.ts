@@ -47,7 +47,6 @@ export class BookComponent implements OnInit {
 
   private processView() {
     this.activatedRouterService.params.subscribe(params => {
-      console.log(params);
       switch (params.domain) {
         case 'chapter': {
           this.getChapter(params.id);
