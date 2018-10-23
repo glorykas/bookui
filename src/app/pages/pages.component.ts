@@ -27,6 +27,7 @@ export class PagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoggedIn = true;
+    this.menu = [];
     this.menu = MENU_ITEMS;
     let start = 3;
     this.mgtMenuGroup = this.populateMgtMenuGroup();

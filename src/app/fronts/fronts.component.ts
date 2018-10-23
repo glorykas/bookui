@@ -29,7 +29,7 @@ export class FrontsComponent implements OnInit {
   ngOnInit() {
     this.sectionMap = new Map<string, Section[]>();
     this.chapters = [];
-    this.menus = MENU_ITEMS;
+    this.menus = [];
     this.dataTransferService.currentBook.subscribe(book => this.book = book);
     this.getChaptersInBook();
   }
@@ -37,17 +37,6 @@ export class FrontsComponent implements OnInit {
   private getChaptersInBook(): void {
     this.loading = true;
     const bookId = this.book ? this.book.bookId : new Book().bookId;
-    // let c = new Chapter();
-    // c.chapterTitle = 'How To Marry';
-    // this.chapters.push(c);
-    // c = new Chapter();
-    // c.chapterTitle = 'Link Here';
-    // this.chapters.push(c);
-    // c = new Chapter();
-    // c.chapterTitle = 'Here';
-    // this.chapters.push(c);
-    // this.buildMenus(this.chapters);
-    // this.loading = false;
     this.chapterService.getChapters(bookId).subscribe(chapters => {
         if (chapters) {
           this.chapters = chapters;
@@ -67,18 +56,23 @@ export class FrontsComponent implements OnInit {
   }
 
   private buildMenus(chapters: Chapter[]): void {
-    chapters.forEach(chapter => {
-      const title = chapter.chapterTitle;
-      const link = '/bookui-read/book/chapter/' + chapter.chapterId;
-      // this.getSectionsInChapter(chapter);
-      const menu: NbMenuItem = {
-        title: title,
-        link: link,
-        icon: 'nb-play-outline',
-      };
+    console.log(this.menus, chapters);
+    if (chapters) {
+      this.menus = [];
+      this.menus = MENU_ITEMS;
+      chapters.forEach(chapter => {
+        const title = chapter.chapterTitle;
+        const link = '/bookui-read/book/chapter/' + chapter.chapterId;
+        // this.getSectionsInChapter(chapter);
+        const menu: NbMenuItem = {
+          title: title,
+          link: link,
+          icon: 'nb-play-outline',
+        };
 
-      this.menus.push(menu);
-    });
+        this.menus.push(menu);
+      });
+    }
   }
 
   private populateRoleMgtMenu(): NbMenuItem {
